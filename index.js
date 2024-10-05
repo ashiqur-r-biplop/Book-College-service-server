@@ -115,8 +115,14 @@ async function run() {
       res.send(result);
     });
     app.post("/review", async (req, res) => {
-      const { collegeId, studentId, collegePhoto, description, rating, collegeName } =
-        req.body;
+      const {
+        collegeId,
+        studentId,
+        collegePhoto,
+        description,
+        rating,
+        collegeName,
+      } = req.body;
       if (!collegeId || !studentId || !description || !rating || !collegeName) {
         return res.status(400).send({ message: "Incomplete review data" });
       }
@@ -149,7 +155,29 @@ async function run() {
         res.status(500).send({ message: "Failed to fetch reviews" });
       }
     });
-
+    app.get("/colleges", async (req, res) => {
+      try {
+        const colleges = await collegeCollection.find().toArray(); // Use find() to get all reviews
+        res.send(colleges); // Send the array of reviews
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+        res.status(500).send({ message: "Failed to fetch reviews" });
+      }
+    });
+    app.get("/college-details/:id", async (req, res) => {
+      const id = req.params.id;
+      // console.log(email);
+      const query = { _id: new ObjectId(id) };
+      const result = await collegeCollection.findOne(query);
+      res.send(result);
+    });
+    app.get("/college-details-review/:id", async (req, res) => {
+      const id = req.params.id;
+      // console.log(email);
+      const query = { collegeId: id };
+      const result = await reviewCollection.findOne(query);
+      res.send(result);
+    });
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
