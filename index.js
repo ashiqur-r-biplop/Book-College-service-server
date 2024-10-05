@@ -50,7 +50,7 @@ async function run() {
     });
     app.get("/single-user", async (req, res) => {
       const email = req.query.email;
-      console.log(email);
+      // console.log(email);
 
       try {
         const query = { email: email };
@@ -67,7 +67,7 @@ async function run() {
     app.patch("/single-user/:userId", async (req, res) => {
       const Id = req.params.userId;
       const user = req.body;
-      console.log(user, Id);
+      // console.log(user, Id);
 
       try {
         const filter = { _id: new ObjectId(Id) };
@@ -111,13 +111,13 @@ async function run() {
       const id = req.params.id;
       const studentId = { studentId: id };
       const result = await collegeCollection.find(studentId).toArray();
-      console.log(result);
+      // console.log(result);
       res.send(result);
     });
     app.post("/review", async (req, res) => {
-      const { collegeId, studentId, collegePhoto, description, rating, name } =
+      const { collegeId, studentId, collegePhoto, description, rating, collegeName } =
         req.body;
-      if (!collegeId || !studentId || !description || !rating || !name) {
+      if (!collegeId || !studentId || !description || !rating || !collegeName) {
         return res.status(400).send({ message: "Incomplete review data" });
       }
 
@@ -128,7 +128,7 @@ async function run() {
         description,
         rating: parseInt(rating), // Make sure rating is an integer
         createdAt: new Date(),
-        studentName: name,
+        collegeName,
       };
 
       try {
